@@ -1,36 +1,47 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, { Component } from 'react'
+import './App.css'
+import categories from './api-server/categories.js'
+import posts from './api-server/posts.js'
 
 class App extends Component {
 
   state = {
-    ram: "Root(default), contains categories",
-    categories: {
-                  category1:['post1a', 'post1b', 'post1c'],
-                  category2:['post2a', 'post2b', 'post2c'], 
-                  category3:['post3a', 'post3b', 'post3c']
-                },
+    cats: [],            
+    title: [],
+    body: [],
   }
 
+  componentDidMount() {
+    categories.getAll().then((cats)=>{
+      if (cats.error) {
+        console.log('error')
+      }
+      this.setState({cats:cats.categories.map((obj)=>(obj.name))})
+    })
+    posts.getAll().then((postss)=>{
+      if (postss.error) {
+        console.log('error')
+      }
+      this.setState({title:postss.map((obj)=>(obj.title))})
+      this.setState({body:postss.map((obj)=>(obj.body))})      
+    })    
+  }
 
-  render() {
+  render() {    
     return (
       <div className="App">
         <div className='listOfCategories'>
-          <h2>{this.state.ram}</h2>
+          <h2>Categories</h2>
           <ul>
-            {Object.keys(this.state.categories).map((category)=>(<li key={category}>{category}</li>))}
+            {this.state.cats.map((category)=>(<li key={category}>{category}</li>))}
           </ul>
         </div>  
 
         <div className='allPosts'>
-          <h3>Here are all posts</h3>
+          <h3>Posts</h3>
           <ul>
             {
-              Object.values(this.state.categories).reduce((allPosts,category)=>{
-                  allPosts = allPosts.concat(category)
-                  return allPosts
-              },[]).map((post)=>(<li key={post}>{post}</li>))
+              this.state.title.map((title)=>(<li key={title}>{title}<button>See more</button></li>))
             }
           </ul>
 
