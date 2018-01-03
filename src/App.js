@@ -12,19 +12,24 @@ class App extends Component {
   }
 
   componentDidMount() {
+
     categories.getAll().then((cats)=>{
       if (cats.error) {
         console.log('error')
       }
+      //console.log(cats.categories)
       this.setState({cats:cats.categories.map((obj)=>(obj.name))})
     })
+
     posts.getAll().then((postss)=>{
       if (postss.error) {
         console.log('error')
       }
+      console.log(postss)
       this.setState({title:postss.map((obj)=>(obj.title))})
       this.setState({body:postss.map((obj)=>(obj.body))})      
-    })    
+    })
+
   }
 
   render() {    
